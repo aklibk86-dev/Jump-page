@@ -1,85 +1,152 @@
-# Jump-page 页面跳转
 
-你还在用老掉牙的跳转页面？OUT啦！本工具是为追求极致体验的你量身打造的前端倒计时跳转神器！无需后端，开箱即用，炫酷粒子背景+玻璃拟态UI，桌面移动全兼容，谁用谁知道！
+<div align="center">
 
-## 炫酷特性
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Web-brightgreen.svg)
+![Dependencies](https://img.shields.io/badge/dependencies-None-lightgrey.svg)
 
-- **自动域名测速，帮你瞬间打开最快的目标站点！**  
-- **多域名测速，自动选最快**：内置多目标测速，帮你自动挑选最快的跳转目标，拒绝卡顿！
-- **微信QQ防红功能**：内置智能检测，自动引导用户使用外部浏览器打开
-- **自定义跳转目标与倒计时**：想跳哪就跳哪，倒计时随你定，主宰你的跳转节奏！
-- **动态粒子背景**：Canvas 粒子飞舞，科技感爆棚，谁看谁说酷！
-- **玻璃拟态UI**：半透明+模糊，潮流感拉满，颜值即正义！
-- **大数字倒计时+进度条**：倒计时一目了然，进度条同步燃烧，紧张感拉满！
-- **响应式布局**：手机、平板、电脑，屏屏适配，走到哪都能用！
-- **零依赖，纯原生**：不带一丝第三方库，轻如鸿毛，快如闪电！
-- **隐私无忧**：没有追踪，没有统计，纯净到极致！
-- **Hash路径支持**：支持深度链接跳转，保留页面路径信息
+**🎯 为追求极致体验而生的前端智能跳转神器**
 
-![演示图片](img/演示.jpg)
+_无需后端 ·静态页面· 开箱即用 · 炫酷特效_
 
-## 极速上手
+[![演示预览](img/演示.jpg)](img/演示.jpg)
 
-详细教程 https://blog.wufeng.me/archives/tiao-zhuan-ye-mian-xiang-mu
+[📖 详细教程](https://blog.wufeng.me/archives/tiao-zhuan-ye-mian-xiang-mu) | [💬 交流群](https://t.me/htpnu) | [⭐ Star](https://github.com/aklibk86-dev/jump-page)
 
-1. 把 `index.html` 拖到你喜欢的地方
-2. 用文本编辑器打开config.json，编辑详细配置
-
-| 参数名             | 说明             |
-|--------------------|------------------|
-| `domains`          | 需要跳转的域名（Base64编码） |
-| `countdownDuration`| 倒计时秒数       |
-| `logoText`         | Logo显示文字     |
-| `logoColor`        | Logo渐变颜色值   |
-| `pageTitle`        | 浏览器标签页标题 |
-
-3. 配置完成后保存文件
-4. 在浏览器中打开index.html即可使用
-
-### Hash路径高级用法
-在跳转链接后添加hash路径，实现深度跳转：
-```
-https://your-domain.com/#/products/details
-```
-最终会跳转到：
-```
-https://fastest-domain.com/products/details
-```
-
-## 个性化你的神器
-
-- **背景渐变**：改 body 的 `background`，想多炫有多炫
-- **粒子特效**：调 JS 粒子数量、速度，或者改 `.particle` 样式
-- **倒计时&进度条**：改 `.countdown`、`.progress-bar`，想怎么炫就怎么炫
-- **动画细节**：自定义动画速度、透明度、圆角，玩出你的风格
-- **引导页定制**：修改 `guide-box` 样式，打造专属引导页
-
-## 部署？小菜一碟！
-
-- **本地用**：直接双击 `index.html`，一秒启动
-- **网站集成**：丢服务器、嵌 iframe，随你玩
-- **CDN/云部署**：GitHub Pages、Netlify、Vercel，想挂哪挂哪
-
-## 文件结构说明
-
-```
-jump-page/
-├── index.html        # 主页面文件
-├── style.css         # 样式表
-├── script.js         # 核心功能脚本
-├── config.json       # 配置文件
-└── img/
-    └── 演示.jpg      # 演示截图
-```
-
-> 这不是普通的跳转页面，这是属于中二少年的跳转神器！推广、广告、活动跳转，统统不在话下！
-
-TG交流群：[https://t.me/htpnu](https://t.me/htpnu)
+</div>
 
 ---
 
-**使用小贴士**：
-- 在微信中打开时会自动显示引导页，引导用户使用外部浏览器
-- 复制按钮可一键复制当前页面链接（包含hash路径）
-- 所有配置都在config.json中完成，无需修改代码
-- 支持多个备用域名，系统会自动选择最快的进行跳转
+## ✨ 核心特性
+
+### 🚀 智能跳转
+
+- **⚡ 多域名测速**：内置测速，自动选择最快的目标站点
+- **🎯 精准跳转**：支持 Hash 路径深度跳转，保留完整页面路径
+- **🔄 备用机制**：多域名容错，确保跳转成功率
+
+### 🎨 视觉体验
+
+- **✨ 动态粒子背景**：Canvas 粒子飞舞，科技感爆棚
+- **🔮 玻璃拟态 UI**：半透明+模糊效果，潮流设计语言
+- **📱 响应式布局**：完美适配桌面、平板、手机
+- **🎭 自定义主题**：支持个性化颜色和样式定制
+
+### 🛡️ 用户体验
+
+- **📱 防红功能**：智能检测微信/QQ，自动引导外部浏览器
+- **⏱️ 倒计时显示**：大数字倒计时 + 进度条，紧张感拉满
+
+### 🛠️ 技术优势
+
+- **⚡ 零依赖**：纯原生实现，轻如鸿毛，快如闪电
+- **🔧 配置简单**：JSON 配置文件，无需编程基础
+- **🌐 部署灵活**：支持本地、服务器、CDN 等多种部署方式
+
+---
+
+## 🚀 快速开始
+
+### 📦 安装部署
+
+1. **下载项目**
+
+   ```bash
+   # Git clone
+   git clone https://github.com/aklibk86-dev/jump-page.git ./
+
+   # 或下载代码后解压即可
+   ```
+
+2. **配置参数**
+
+   编辑 `config.json` 文件 ( [在线 BASE64 编解码](https://www.toolhelper.cn/EncodeDecode/Base64) )：
+
+   ```json
+   {
+     "domains": ["aHR0cHM6Ly9leGFtcGxlLmNvbQ=="],
+     "countdownDuration": 5,
+     "logoText": "Jump-page",
+     "logoColor": "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
+     "pageTitle": "正在跳转..."
+   }
+   ```
+
+3. **启动使用**
+
+   ```bash
+   # 本地使用
+   双击 index.html
+
+   # 或借助 Vscode Live Server 插件
+   ```
+
+### ⚙️ 配置说明
+
+| 参数                | 类型   | 说明                        | 示例                                                 |
+| ------------------- | ------ | --------------------------- | ---------------------------------------------------- |
+| `domains`           | Array  | 跳转域名列表（Base64 编码） | `["aHR0cHM6Ly9leGFtcGxlLmNvbQ=="]`                   |
+| `countdownDuration` | Number | 倒计时秒数                  | `5`                                                  |
+| `logoText`          | String | Logo 显示文字               | `"Jump-page"`                                        |
+| `logoColor`         | String | Logo 渐变颜色               | `"linear-gradient(45deg, #667eea 0%, #764ba2 100%)"` |
+| `pageTitle`         | String | 浏览器标签页标题            | `"正在跳转..."`                                      |
+
+### 🔗 Hash 路径跳转
+
+支持深度链接跳转，保留页面路径信息 ( **注意原始链接的#** )：
+
+```
+原始链接：https://jump.page/#/products/details
+跳转结果：https://fastest-domain.com/products/details
+```
+
+---
+
+## 🎨 个性化定制
+
+### 🎨 样式定制
+
+#### 背景渐变
+
+```css
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+```
+
+#### 粒子特效
+
+```javascript
+// 调整粒子数量和速度
+const particleCount = 100;
+const particleSpeed = 2;
+```
+
+#### 倒计时样式
+
+```css
+.countdown {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+```
+
+---
+
+## ⭐ 使用小贴士
+
+- 🎯 **微信/QQ 用户**：自动显示引导页，建议使用外部浏览器
+- ⚙️ **配置修改**：所有设置都在 `config.json` 中，无需修改代码
+- 🔄 **备用域名**：建议配置多个备用域名，提高跳转成功率
+- 🎨 **主题定制**：可根据喜好调整颜色和样式
+
+---
+
+<div align="center">
+
+**🌟 如果这个项目对你有帮助，请给我们一个 Star！**
+
+_这不是普通的跳转页面，这是属于极客的跳转神器！_
+
+</div>
