@@ -1,11 +1,11 @@
 // src/js/domain-speed.js
-// 域名测速功能
+// 域名测速与倒计时跳转稳定版
 
 import { startCountdown } from './countdown.js';
 
 /**
- * 解密base64域名
- * @param {Array<string>} domains - Base64编码的域名数组
+ * 解密 base64 域名
+ * @param {Array<string>} domains - Base64 编码的域名数组
  * @returns {Array<string>} 解密后的域名数组
  */
 function decodeDomains(domains) {
@@ -13,86 +13,87 @@ function decodeDomains(domains) {
 }
 
 /**
- * 测试域名速度
- * @param {Array<string>} domains - 要测试的域名数组
+ * 测试单个域名速度（HEAD 请求）
+ * @param {string} domain 
  * @param {number} timeout - 超时时间（毫秒）
- * @returns {Promise<Array<Object>>} 包含域名和响应时间的数组
+ * @returns {Promise<Object>}
  */
-function testDomainSpeed(domains, timeout = 2000) {
-    return Promise.all(domains.map(domain => {
-        return new Promise(resolve => {
-            const img = new Image();
-            const start = performance.now();
-            let finished = false;
-            img.onload = () => {
-                if (!finished) {
-                    finished = true;
-                    resolve({domain, time: performance.now() - start});
-                }
-            };
-            img.onerror = () => {
-                if (!finished) {
-                    finished = true;
-                    resolve({domain, time: Infinity});
-                }
-            };
-            img.src = domain + "/favicon.ico?_t=" + Math.random();
-            setTimeout(() => {
-                if (!finished) {
-                    finished = true;
-                    resolve({domain, time: Infinity});
-                }
-            }, timeout);
-        });
-    }));
+function testSingleDomain(domain, timeout = 3000) {
+    return new Promise(resolve => {
+        const start = performance.now();
+        const controller = new AbortController();
+
+        const timer = setTimeout(() => controller.abort(), timeout);
+
+        fetch(domain, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+            .then(() => {
+                clearTimeout(timer);
+                resolve({ domain, time: performance.now() - start });
+            })
+            .catch(() => resolve({ domain, time: Infinity }));
+    });
 }
 
 /**
- * 选择最快的域名
- * @param {Array<Object>} results - 测试结果数组
- * @returns {string} 最快的域名
+ * 测试域名速度
+ * @param {Array<string>} domains 
+ * @param {number} timeout 
+ * @returns {Promise<Array<Object>>}
+ */
+function testDomainSpeed(domains, timeout = 3000) {
+    return Promise.all(domains.map(d => testSingleDomain(d, timeout)));
+}
+
+/**
+ * 选择最快域名
+ * @param {Array<Object>} results 
+ * @returns {string|null} 最快域名或 null（全部失败）
  */
 function selectFastestDomain(results) {
-    results.sort((a, b) => a.time - b.time);
-    return results[0].domain;
+    const valid = results.filter(r => r.time !== Infinity);
+    if (valid.length === 0) return null;
+    valid.sort((a, b) => a.time - b.time);
+    return valid[0].domain;
 }
 
 /**
- * 测试域名并启动倒计时
+ * 测试域名并启动倒计时跳转
  * @param {Array} domains - 域名列表
- * @param {string} targetPath - 目标路径
+ * @param {string} targetPath - URL hash 或路径
  * @param {number} countdown - 倒计时秒数
  * @returns {Promise<Array>} 域名测速结果数组
  */
 async function testDomains(domains, targetPath, countdown) {
-    // 测试域名速度
+    // 域名测速
     const results = await testDomainSpeed(domains);
     console.log('域名测速结果:', results);
-    
-    // 选择最快的域名
-    const fastest = selectFastestDomain(results);
+
+    // 选择最快域名
+    let fastest = selectFastestDomain(results);
     console.log('最快的域名:', fastest);
-    
+
     // 构造目标URL
     let targetUrl = fastest;
-    
-    // 如果有目标路径，添加到目标URL
-    if (targetPath) {
-        // 确保目标URL以斜杠结尾
-        if (!targetUrl.endsWith('/')) {
-            targetUrl += '/';
-        }
-        // 移除目标路径开头的斜杠（如果有）
+
+    if (fastest && targetPath) {
+        if (!targetUrl.endsWith('/')) targetUrl += '/';
         const cleanPath = targetPath.startsWith('/') ? targetPath.substring(1) : targetPath;
         targetUrl += cleanPath;
     }
-    
-    // 启动倒计时，传递域名测速结果
-    startCountdown(targetUrl, countdown, results);
-    
-    // 返回测速结果
+
+    // 判断是否与当前页面相同
+    const currentUrl = window.location.href.split('#')[0]; // 忽略 hash
+    const compareUrl = targetUrl ? targetUrl.split('#')[0] : '';
+    if (compareUrl === currentUrl || !fastest) {
+        console.log('目标URL与当前页面相同或没有可用域名，倒计时结束显示弹窗');
+        startCountdown("", countdown, results); // 空字符串 → redirectToTarget 会触发弹窗
+    } else {
+        // 倒计时结束跳转
+        startCountdown(targetUrl, countdown, results);
+    }
+
     return results;
 }
 
-// 导出函数
+// 导出模块
 export { decodeDomains, testDomainSpeed, selectFastestDomain, testDomains };
