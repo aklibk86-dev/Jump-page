@@ -1,5 +1,5 @@
 // src/js/domain-speed.js
-// 域名测速与倒计时跳转稳定版
+// 域名测速与倒计时跳转稳定版（防闪退）
 
 import { startCountdown } from './countdown.js';
 
@@ -22,7 +22,6 @@ function testSingleDomain(domain, timeout = 3000) {
     return new Promise(resolve => {
         const start = performance.now();
         const controller = new AbortController();
-
         const timer = setTimeout(() => controller.abort(), timeout);
 
         fetch(domain, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
@@ -74,21 +73,21 @@ async function testDomains(domains, targetPath, countdown) {
 
     // 构造目标URL
     let targetUrl = fastest;
-
     if (fastest && targetPath) {
         if (!targetUrl.endsWith('/')) targetUrl += '/';
         const cleanPath = targetPath.startsWith('/') ? targetPath.substring(1) : targetPath;
         targetUrl += cleanPath;
     }
 
-    // 判断是否与当前页面相同
-    const currentUrl = window.location.href.split('#')[0]; // 忽略 hash
-    const compareUrl = targetUrl ? targetUrl.split('#')[0] : '';
-    if (compareUrl === currentUrl || !fastest) {
-        console.log('目标URL与当前页面相同或没有可用域名，倒计时结束显示弹窗');
-        startCountdown("", countdown, results); // 空字符串 → redirectToTarget 会触发弹窗
+    // 判断目标 URL 是否与当前页面相同（忽略 hash）
+    const currentOrigin = window.location.origin;
+    const fastestOrigin = fastest ? new URL(fastest).origin : "";
+    if (!fastest || fastestOrigin === currentOrigin) {
+        console.log('目标域名与当前页面相同或不可用，将在倒计时结束后显示弹窗');
+        // 倒计时结束触发弹窗
+        startCountdown("", countdown, results);
     } else {
-        // 倒计时结束跳转
+        // 倒计时结束跳转到最快域名
         startCountdown(targetUrl, countdown, results);
     }
 
