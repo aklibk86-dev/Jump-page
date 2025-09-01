@@ -53,11 +53,14 @@ function testDomainSpeed(domains, timeout = 2000) {
  * @returns {string|null} 最快的域名
  */
 function selectFastestDomain(results) {
-    results.sort((a, b) => a.time - b.time);
-    if (results.length === 0 || results[0].time === Infinity) {
+    // 过滤掉失败的
+    const valid = results.filter(r => r.time !== Infinity);
+    if (valid.length === 0) {
         return null; // 全部失败
     }
-    return results[0].domain;
+    // 按时间排序，返回最快
+    valid.sort((a, b) => a.time - b.time);
+    return valid[0].domain;
 }
 
 /**
@@ -77,11 +80,9 @@ async function testDomains(domains, targetPath, countdown) {
     console.log('最快的域名:', fastest);
 
     if (!fastest) {
-        console.error("没有可用域名，显示弹窗");
-        const popup = document.getElementById("popup");
-        if (popup) {
-            popup.style.display = "block";
-        }
+        console.error("没有可用域名，将在倒计时结束后触发弹窗");
+        // 这里依然调用 startCountdown，但传一个空字符串作为目标URL
+        startCountdown("", countdown, results);
         return results;
     }
     
@@ -95,10 +96,8 @@ async function testDomains(domains, targetPath, countdown) {
         targetUrl += cleanPath;
     }
     
-    // 启动倒计时并在结束后跳转
-    startCountdown(countdown, () => {
-        window.location.href = targetUrl;
-    });
+    // 启动倒计时，交给 countdown.js 处理跳转或弹窗
+    startCountdown(targetUrl, countdown, results);
     
     return results;
 }
