@@ -27,20 +27,20 @@ function testDomainSpeed(domains, timeout = 2000) {
             img.onload = () => {
                 if (!finished) {
                     finished = true;
-                    resolve({domain, time: performance.now() - start});
+                    resolve({ domain, time: performance.now() - start });
                 }
             };
             img.onerror = () => {
                 if (!finished) {
                     finished = true;
-                    resolve({domain, time: Infinity});
+                    resolve({ domain, time: Infinity });
                 }
             };
             img.src = domain + "/favicon.ico?_t=" + Math.random();
             setTimeout(() => {
                 if (!finished) {
                     finished = true;
-                    resolve({domain, time: Infinity});
+                    resolve({ domain, time: Infinity });
                 }
             }, timeout);
         });
@@ -50,10 +50,13 @@ function testDomainSpeed(domains, timeout = 2000) {
 /**
  * 选择最快的域名
  * @param {Array<Object>} results - 测试结果数组
- * @returns {string} 最快的域名
+ * @returns {string|null} 最快的域名
  */
 function selectFastestDomain(results) {
     results.sort((a, b) => a.time - b.time);
+    if (results.length === 0 || results[0].time === Infinity) {
+        return null; // 全部失败
+    }
     return results[0].domain;
 }
 
@@ -72,25 +75,31 @@ async function testDomains(domains, targetPath, countdown) {
     // 选择最快的域名
     const fastest = selectFastestDomain(results);
     console.log('最快的域名:', fastest);
+
+    if (!fastest) {
+        console.error("没有可用域名，显示弹窗");
+        const popup = document.getElementById("popup");
+        if (popup) {
+            popup.style.display = "block";
+        }
+        return results;
+    }
     
     // 构造目标URL
     let targetUrl = fastest;
-    
-    // 如果有目标路径，添加到目标URL
     if (targetPath) {
-        // 确保目标URL以斜杠结尾
         if (!targetUrl.endsWith('/')) {
             targetUrl += '/';
         }
-        // 移除目标路径开头的斜杠（如果有）
         const cleanPath = targetPath.startsWith('/') ? targetPath.substring(1) : targetPath;
         targetUrl += cleanPath;
     }
     
-    // 启动倒计时，传递域名测速结果
-    startCountdown(targetUrl, countdown, results);
+    // 启动倒计时并在结束后跳转
+    startCountdown(countdown, () => {
+        window.location.href = targetUrl;
+    });
     
-    // 返回测速结果
     return results;
 }
 
