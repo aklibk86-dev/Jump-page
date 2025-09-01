@@ -1,5 +1,5 @@
 // src/js/domain-speed.js
-// 域名测速功能
+// 域名测速功能（使用 HEAD 请求替代图片请求）
 
 import { startCountdown } from './countdown.js';
 
@@ -13,52 +13,48 @@ function decodeDomains(domains) {
 }
 
 /**
- * 测试域名速度
- * @param {Array<string>} domains - 要测试的域名数组
+ * 测试单个域名速度
+ * @param {string} domain - 域名
  * @param {number} timeout - 超时时间（毫秒）
- * @returns {Promise<Array<Object>>} 包含域名和响应时间的数组
+ * @returns {Promise<Object>} 域名及响应时间
  */
-function testDomainSpeed(domains, timeout = 2000) {
-    return Promise.all(domains.map(domain => {
-        return new Promise(resolve => {
-            const img = new Image();
-            const start = performance.now();
-            let finished = false;
-            img.onload = () => {
-                if (!finished) {
-                    finished = true;
-                    resolve({ domain, time: performance.now() - start });
-                }
-            };
-            img.onerror = () => {
-                if (!finished) {
-                    finished = true;
-                    resolve({ domain, time: Infinity });
-                }
-            };
-            img.src = domain + "/favicon.ico?_t=" + Math.random();
-            setTimeout(() => {
-                if (!finished) {
-                    finished = true;
-                    resolve({ domain, time: Infinity });
-                }
-            }, timeout);
-        });
-    }));
+function testSingleDomain(domain, timeout = 3000) {
+    return new Promise(resolve => {
+        const start = performance.now();
+        const controller = new AbortController();
+
+        // 超时处理
+        const timer = setTimeout(() => {
+            controller.abort();
+        }, timeout);
+
+        fetch(domain, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+            .then(() => {
+                clearTimeout(timer);
+                resolve({ domain, time: performance.now() - start });
+            })
+            .catch(() => resolve({ domain, time: Infinity }));
+    });
+}
+
+/**
+ * 测试域名速度
+ * @param {Array<string>} domains - 域名列表
+ * @param {number} timeout - 超时时间（毫秒）
+ * @returns {Promise<Array<Object>>} 域名及响应时间
+ */
+function testDomainSpeed(domains, timeout = 3000) {
+    return Promise.all(domains.map(d => testSingleDomain(d, timeout)));
 }
 
 /**
  * 选择最快的域名
  * @param {Array<Object>} results - 测试结果数组
- * @returns {string|null} 最快的域名
+ * @returns {string|null} 最快域名或 null（全部失败）
  */
 function selectFastestDomain(results) {
-    // 过滤掉失败的
     const valid = results.filter(r => r.time !== Infinity);
-    if (valid.length === 0) {
-        return null; // 全部失败
-    }
-    // 按时间排序，返回最快
+    if (valid.length === 0) return null;
     valid.sort((a, b) => a.time - b.time);
     return valid[0].domain;
 }
@@ -66,39 +62,31 @@ function selectFastestDomain(results) {
 /**
  * 测试域名并启动倒计时
  * @param {Array} domains - 域名列表
- * @param {string} targetPath - 目标路径
+ * @param {string} targetPath - URL hash 或路径
  * @param {number} countdown - 倒计时秒数
  * @returns {Promise<Array>} 域名测速结果数组
  */
 async function testDomains(domains, targetPath, countdown) {
-    // 测试域名速度
+    // 域名测速
     const results = await testDomainSpeed(domains);
     console.log('域名测速结果:', results);
-    
-    // 选择最快的域名
-    const fastest = selectFastestDomain(results);
+
+    // 选择最快域名
+    let fastest = selectFastestDomain(results);
     console.log('最快的域名:', fastest);
 
-    if (!fastest) {
-        console.error("没有可用域名，将在倒计时结束后触发弹窗");
-        // 这里依然调用 startCountdown，但传一个空字符串作为目标URL
-        startCountdown("", countdown, results);
-        return results;
-    }
-    
     // 构造目标URL
     let targetUrl = fastest;
-    if (targetPath) {
-        if (!targetUrl.endsWith('/')) {
-            targetUrl += '/';
-        }
+    if (fastest && targetPath) {
+        if (!targetUrl.endsWith('/')) targetUrl += '/';
         const cleanPath = targetPath.startsWith('/') ? targetPath.substring(1) : targetPath;
         targetUrl += cleanPath;
     }
-    
-    // 启动倒计时，交给 countdown.js 处理跳转或弹窗
-    startCountdown(targetUrl, countdown, results);
-    
+
+    // 启动倒计时
+    // 如果最快域名为 null（全部失败），倒计时结束后会触发弹窗
+    startCountdown(targetUrl || "", countdown, results);
+
     return results;
 }
 
