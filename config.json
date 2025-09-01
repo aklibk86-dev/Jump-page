@@ -1,16 +1,16 @@
 {
     "domains": [
-        "aHR0cHM6Ly94Ym9hcmQud3VmZW5nLm1l",
-        "aHR0cHM6Ly94Ym9hcmQud3VmZW5nLm1l",
-        "aHR0cHM6Ly94Ym9hcmQud3VmZW5nLm1l"
+        "aHR0cHM6Ly9iZWlrZXFpYW5kdWFuMS5jYw==",
+        "aHR0cHM6Ly9iZWlrZXFpYW5kdWFuLmNj",
+        "aHR0cHM6Ly9iZWlrZXpmenkuY2M="
     ],
     "countdownDuration": 5,
     "pageTitle": "跳转到我的网站",
-    "theme": "forest",
-    "footerCode": "<p style='text-align: center; margin-top: 20px; color: #666;'>© 2023 My Website. All rights reserved.</p>",
+    "theme": "sunset",
+    "footerCode": "<p style='text-align: center; margin-top: 20px; color: #666;'>© 2025 贝壳考研专属.</p>",
     "popup": {
         "title": "重要通知",
-        "content": "您无法访问，网站请联系网站管理人员<p>联系方式：xxxx",
+        "content": "您无法访问，网站请联系网站管理人员<p>联系方式：test@liuliu.cfd",
         "buttonText": "确定",
         "buttonLink": "#"
     }
