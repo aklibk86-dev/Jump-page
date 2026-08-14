@@ -8,7 +8,7 @@
 
 _无需后端 ·静态页面· 开箱即用 · 炫酷特效_
 
-[📖 详细教程](https://blog.wufeng.me/archives/tiao-zhuan-ye-mian-xiang-mu) | [💬 交流群](https://t.me/htpnu) | [⭐ Star](https://github.com/aklibk86-dev/jump-page)
+[📖 详细教程](https://blog.wufeng.me/archives/tiao-zhuan-ye-mian-xiang-mu) | [💬 交流群](https://t.me/kqxw_chat) | [⭐ Star](https://github.com/aklibk86-dev/jump-page)
 
 </div>
 
